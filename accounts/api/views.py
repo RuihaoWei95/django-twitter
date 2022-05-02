@@ -14,7 +14,6 @@ from django.contrib.auth import (
 from accounts.api.serializers import SignupSerializer, LoginSerializer
 
 
-
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
@@ -22,6 +21,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
+
 
 class AccountViewSet(viewsets.ViewSet):
     permission_classes = (AllowAny,)
@@ -38,14 +38,14 @@ class AccountViewSet(viewsets.ViewSet):
                 'success': False,
                 'message': "Please check input",
                 'errors': serializer.errors,
-            }, state=400)
+            }, status=400)
 
         user = serializer.save()
         django_login(request, user)
         return Response({
             'success': True,
             'user': UserSerializer(user).data,
-        })
+        }, status=201)
 
     @action(methods=['POST'], detail=False)
     def login(self, request):

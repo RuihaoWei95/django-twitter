@@ -27,7 +27,7 @@ class AccountViewSet(viewsets.ViewSet):
     permission_classes = (AllowAny,)
     serializer_class = SignupSerializer
 
-    @action(methods=['POST'], detail = False)
+    @action(methods=['POST'], detail=False)
     def signup(self, request):
         """
         Signup with username,email,password

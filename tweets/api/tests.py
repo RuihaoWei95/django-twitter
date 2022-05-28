@@ -64,7 +64,6 @@ class TweetApiTests(TestCase):
         response = self.user1_client.post(TWEET_CREATE_API, {
             'content': 'Hello Gongzi!'
         })
-
         # check if normal tweets return 201
         self.assertEqual(response.status_code, 201)
         # check user id

@@ -101,3 +101,26 @@ class CommentApiTests(TestCase):
         response = self.linghu_client.delete(COMMENT_DESTROY_URL.format(comment.id))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Comment.objects.count(), count - 1)
+
+    def test_list(self):
+        # needs to include tweet id
+        response = self.anonymous_client.get(COMMENT_URL)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # check no comments
+        response = self.anonymous_client.get(COMMENT_URL, {
+            'tweet_id': self.tweet.id,
+        })
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['comments']), 0)
+
+        # check comments in order of time
+        self.create_comment(self.linghu, self.tweet, '1')
+        self.create_comment(self.linghu, self.tweet, '2')
+        self.create_comment(self.dongxie, self.create_tweet(self.dongxie), '3')
+
+        response = self.anonymous_client.get(COMMENT_URL, {
+            'tweet_id': self.tweet.id,
+            'user_id': self.linghu.id
+        })
+        self.assertEqual(len(response.data['comments']), 2)

@@ -4,7 +4,7 @@ from tweets.models import Tweet
 
 TWEET_LIST_API = '/api/tweets/'
 TWEET_CREATE_API = '/api/tweets/'
-
+TWEET_RETRIEVE_API = '/api/tweets/{}/'
 
 class TweetApiTests(TestCase):
 
@@ -69,3 +69,20 @@ class TweetApiTests(TestCase):
         # check if tweet stores to database
         self.assertEqual(Tweet.objects.count(), tweets_count + 1)
 
+    def test_retrieve(self):
+        # tweet with id=-1 does not exist
+        url = TWEET_RETRIEVE_API.format(-1)
+        response = self.anonymous_client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+        # 获取某个 tweet 的时候会一起把 comments 也拿下
+        tweet = self.create_tweet(self.user1)
+        url = TWEET_RETRIEVE_API.format(tweet.id)
+        response = self.anonymous_client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data['comments']), 0)
+
+        self.create_comment(self.user2, tweet, 'holly s***')
+        self.create_comment(self.user1, tweet, 'hmm...')
+        response = self.anonymous_client.get(url)
+        self.assertEqual(len(response.data['comments']), 2)

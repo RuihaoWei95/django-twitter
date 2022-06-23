@@ -22,6 +22,7 @@ from newsfeeds.api.views import NewsFeedViewSet
 from comments.api.views import CommentViewSet
 from likes.api.views import LikeViewSet
 
+
 router = routers.DefaultRouter()
 router.register(r'api/users', UserViewSet)
 router.register(r'api/accounts', AccountViewSet, basename='accounts')

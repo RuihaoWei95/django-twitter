@@ -37,9 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     #   third party
     'rest_framework',
     'django_filters',
+    'notifications',
 
     #   project apps
     'accounts',
@@ -48,6 +50,7 @@ INSTALLED_APPS = [
     'newsfeeds',
     'comments',
     'likes',
+    'inbox',
 ]
 
 REST_FRAMEWORK = {

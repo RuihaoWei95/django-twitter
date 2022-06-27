@@ -1,5 +1,6 @@
 from rest_framework.test import APIClient
 from testing.testcases import TestCase
+from accounts.models import UserProfile
 
 LOGIN_URL = '/api/accounts/login/'
 LOGOUT_URL = '/api/accounts/logout/'
@@ -44,6 +45,7 @@ class AccountApiTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(response.data['user'], None)
         self.assertEqual(response.data['user']['email'], 'admin@jiuzhang.com')
+
         # test already login
         response = self.client.get(LOGIN_STATUS_URL)
         self.assertEqual(response.data['has_logged_in'], True)
@@ -107,6 +109,12 @@ class AccountApiTests(TestCase):
         response = self.client.post(SIGNUP_URL, data)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data['user']['username'], 'someone')
+
+        # 验证 user profile 已经被创建
+        created_user_id = response.data['user']['id']
+        profile = UserProfile.objects.filter(user_id=created_user_id).first()
+        self.assertNotEqual(profile, None)
+
         # test user login
         response = self.client.get(LOGIN_STATUS_URL)
         self.assertEqual(response.data['has_logged_in'], True)

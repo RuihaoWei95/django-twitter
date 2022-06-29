@@ -1,6 +1,6 @@
 from rest_framework import serializers, exceptions
 from friendships.models import Friendship
-from accounts.api.serializers import UserSerializer
+from accounts.api.serializers import UserSerializerForFriendship
 
 
 class FriendshipSerializerForCreate(serializers.ModelSerializer):
@@ -28,7 +28,7 @@ class FriendshipSerializerForCreate(serializers.ModelSerializer):
 
 
 class FollowerSerializer(serializers.ModelSerializer):
-    user = UserSerializer(source='from_user')
+    user = UserSerializerForFriendship(source='from_user')
     created_at = serializers.DateTimeField()
 
     class Meta:
@@ -37,7 +37,7 @@ class FollowerSerializer(serializers.ModelSerializer):
 
 
 class FollowingSerializer(serializers.ModelSerializer):
-    user = UserSerializer(source='to_user')
+    user = UserSerializerForFriendship(source='to_user')
     created_at = serializers.DateTimeField()
 
     class Meta:
